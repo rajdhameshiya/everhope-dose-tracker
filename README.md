@@ -23,10 +23,10 @@ The demo has no authentication. Selecting a patient stores their ID in `localSto
 
 ## Prompt File
 
-find the Prompt file in Docs > Conversation-log.md
+find the Prompt file in Docs > Conversation-log.md or just [click here](https://github.com/rajdhameshiya/everhope-dose-tracker/tree/main/docs)
 
 ## Roadmap for 4 week & 12 week
 
-You can find it in Docs > Everhopw Roadmap.pdf (docs)
+You can find it in Docs > Everhopw Roadmap.pdf (docs) or just [click here](https://github.com/rajdhameshiya/everhope-dose-tracker/tree/main/docs)
 
 
