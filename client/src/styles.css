@@ -237,9 +237,17 @@ h2 {
   color: #4b5563;
 }
 
+.home-glance-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+}
+
 .today-overview {
   display: grid;
-  gap: 12px;
+  gap: 7px;
+  min-height: 132px;
+  align-content: start;
 }
 
 .today-overview.has-missed {
@@ -247,46 +255,37 @@ h2 {
   background: linear-gradient(180deg, #fff, var(--red-soft));
 }
 
-.today-overview-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+.today-count-line {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
 }
 
-.today-overview-grid div {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: #fff;
-  padding: 10px;
-  display: grid;
-  gap: 2px;
-}
-
-.today-overview-grid span {
-  color: var(--muted);
-  font-size: 0.74rem;
-  font-weight: 750;
-}
-
-.today-overview-grid strong {
+.today-count-line strong {
   color: #111827;
-  font-size: 1.5rem;
-  line-height: 1.1;
+  font-size: 2.1rem;
+  line-height: 0.95;
+  font-weight: 850;
 }
 
-.today-overview-grid .danger-metric {
-  border-color: #fecaca;
-  background: var(--red-soft);
-}
-
-.today-overview-grid .danger-metric span,
-.today-overview-grid .danger-metric strong {
-  color: #991b1b;
+.today-count-line span {
+  color: #4b5563;
+  font-weight: 800;
 }
 
 .overview-note {
   color: #4b5563;
   font-size: 0.92rem;
+}
+
+.missed-pill {
+  width: fit-content;
+  border-radius: 999px;
+  background: var(--red);
+  color: #fff;
+  font-size: 0.74rem;
+  font-weight: 850;
+  padding: 3px 8px;
 }
 
 .eyebrow {
@@ -313,11 +312,26 @@ h2 {
 }
 
 .streak-card {
+  border: 1px solid var(--border);
+  text-align: left;
   display: grid;
-  grid-template-columns: 64px 1fr;
+  grid-template-columns: 42px 1fr;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   background: linear-gradient(180deg, #ffffff, #f6fbf8);
+  min-height: 132px;
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.streak-card:hover,
+.streak-card:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 12px 26px rgba(26, 127, 90, 0.12);
+  outline: none;
+}
+
+.streak-card:active {
+  transform: scale(0.99);
 }
 
 .streak-icon,
@@ -331,8 +345,13 @@ h2 {
   background: var(--accent-soft);
 }
 
+.streak-icon.compact {
+  width: 38px;
+  height: 38px;
+}
+
 .streak-number {
-  font-size: 3rem;
+  font-size: 2rem;
   line-height: 0.95;
   font-weight: 850;
   color: var(--accent);
@@ -340,6 +359,120 @@ h2 {
 
 .streak-label {
   font-weight: 800;
+}
+
+.back-link {
+  width: fit-content;
+  border: 0;
+  background: transparent;
+  color: #374151;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  font-weight: 800;
+}
+
+.streak-detail-hero {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 8px;
+  background: linear-gradient(180deg, #ffffff, #edf8f2);
+}
+
+.streak-detail-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.streak-detail-hero h1 {
+  color: var(--accent);
+  font-size: 2.3rem;
+}
+
+.streak-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.streak-mini-stat {
+  display: grid;
+  gap: 5px;
+}
+
+.streak-mini-stat svg {
+  color: var(--accent);
+}
+
+.streak-mini-stat span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.streak-mini-stat strong {
+  font-size: 1.05rem;
+}
+
+.streak-mini-stat p {
+  color: #4b5563;
+  font-size: 0.86rem;
+}
+
+.reward-list {
+  display: grid;
+  gap: 10px;
+}
+
+.reward-item {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  gap: 10px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+
+.reward-item:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.reward-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #6b7280;
+  background: #f3f4f6;
+}
+
+.reward-item.unlocked .reward-icon {
+  color: #fff;
+  background: var(--accent);
+}
+
+.reward-item span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.reward-item strong {
+  display: block;
+  color: #111827;
+}
+
+.reward-item p {
+  color: #4b5563;
+  font-size: 0.9rem;
 }
 
 .next-dose,

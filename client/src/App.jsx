@@ -7,9 +7,12 @@ import {
   HeartPulse,
   Home,
   Leaf,
+  LockKeyhole,
   Package,
   Pill,
+  Sparkles,
   SkipForward,
+  Trophy,
   TrendingUp,
   X,
 } from 'lucide-react';
@@ -226,6 +229,7 @@ function App() {
         <Route path="/progress" element={<ProgressScreen />} />
         <Route path="/supplements" element={<SupplementsScreen />} />
         <Route path="/log/:doseId" element={<DoseLogScreen />} />
+        <Route path="/streak" element={<StreakDetailsScreen />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
@@ -360,9 +364,11 @@ function HomeScreen() {
   return (
     <Page>
       <GreetingHeader patient={patient} summary={summary} />
-      <TodayDoseOverview summary={summary} />
+      <section className="home-glance-grid" aria-label="Today at a glance">
+        <TodayDoseOverview summary={summary} />
+        <StreakCard adherence={adherence} />
+      </section>
       <NudgeCard nudge={adherence?.consecutiveMissNudge} />
-      <StreakCard adherence={adherence} />
 
       {nextDose && (
         <NextDoseCard
@@ -407,33 +413,16 @@ function HomeScreen() {
 
 function TodayDoseOverview({ summary }) {
   const missedCount = summary.missed || 0;
-  const pendingCount = summary.pending || 0;
 
   return (
     <section className={`today-overview card ${missedCount > 0 ? 'has-missed' : ''}`}>
-      <div>
-        <p className="eyebrow">Today</p>
-        <h2>Dose summary</h2>
+      <p className="eyebrow">Today</p>
+      <div className="today-count-line">
+        <strong>{summary.taken || 0}</strong>
+        <span>of {summary.total || 0}</span>
       </div>
-      <div className="today-overview-grid">
-        <div>
-          <span>Total doses</span>
-          <strong>{summary.total || 0}</strong>
-        </div>
-        <div>
-          <span>Taken</span>
-          <strong>{summary.taken || 0}</strong>
-        </div>
-        <div className={missedCount > 0 ? 'danger-metric' : ''}>
-          <span>Skipped</span>
-          <strong>{missedCount}</strong>
-        </div>
-      </div>
-      <p className="overview-note">
-        {pendingCount > 0
-          ? `${pendingCount} ${plural(pendingCount, 'dose')} still planned for today.`
-          : 'No more doses are pending today.'}
-      </p>
+      <p className="overview-note">doses taken</p>
+      {missedCount > 0 && <span className="missed-pill">{missedCount} skipped</span>}
     </section>
   );
 }
@@ -473,22 +462,19 @@ function GreetingHeader({ patient, summary }) {
 function StreakCard({ adherence }) {
   const streak = adherence?.currentStreak || 0;
   const best = adherence?.personalBestStreak || 0;
+  const navigate = useNavigate();
 
   return (
-    <section className="streak-card card">
-      <div className="streak-icon" aria-hidden="true">
-        <Flame size={27} />
+    <button className="streak-card card" type="button" onClick={() => navigate('/streak')}>
+      <div className="streak-icon compact" aria-hidden="true">
+        <Flame size={20} />
       </div>
       <div>
         <div className="streak-number">{streak}</div>
         <p className="streak-label">day streak</p>
-        <p className="muted">
-          {streak === 0
-            ? 'Start your streak today — take today’s doses.'
-            : `Personal best: ${best} ${plural(best, 'day')}.`}
-        </p>
+        <p className="muted">Best {best} {plural(best, 'day')}</p>
       </div>
-    </section>
+    </button>
   );
 }
 
@@ -723,6 +709,148 @@ function ProgressScreen() {
       </section>
     </Page>
   );
+}
+
+function StreakDetailsScreen() {
+  const { patient, history, adherence, loading, error } = usePatientData();
+  const navigate = useNavigate();
+
+  if (loading && !patient) return <LoadingCard label="Opening your streak" />;
+  if (error && !patient) return <InlineError message={error} />;
+
+  const currentStreak = adherence?.currentStreak || 0;
+  const personalBest = adherence?.personalBestStreak || 0;
+  const currentStart = currentStreak > 0
+    ? addDays(todayKey(), -(currentStreak - 1))
+    : null;
+  const bestWindow = findBestStreakWindow(history);
+  const rewards = streakRewards();
+  const nextReward = rewards.find((reward) => reward.days > currentStreak) || rewards[rewards.length - 1];
+
+  return (
+    <Page>
+      <button className="back-link" type="button" onClick={() => navigate('/home')}>
+        <ArrowLeft size={18} aria-hidden="true" />
+        Home
+      </button>
+
+      <section className="streak-detail-hero card">
+        <div className="streak-detail-icon" aria-hidden="true">
+          <Flame size={28} />
+        </div>
+        <p className="eyebrow">Your streak</p>
+        <h1>{currentStreak} {plural(currentStreak, 'day')}</h1>
+        <p>
+          {currentStart
+            ? `This streak started on ${formatDate(currentStart)}.`
+            : 'Start your streak today by completing your planned doses.'}
+        </p>
+      </section>
+
+      <section className="streak-detail-grid">
+        <div className="card streak-mini-stat">
+          <Trophy size={20} aria-hidden="true" />
+          <span>Highest streak</span>
+          <strong>{personalBest} {plural(personalBest, 'day')}</strong>
+          <p>
+            {bestWindow?.start && bestWindow?.end
+              ? `${formatDate(bestWindow.start)} to ${formatDate(bestWindow.end)}`
+              : 'Your best streak will appear here.'}
+          </p>
+        </div>
+        <div className="card streak-mini-stat">
+          <Sparkles size={20} aria-hidden="true" />
+          <span>Next unlock</span>
+          <strong>{nextReward.days} days</strong>
+          <p>{nextReward.title}</p>
+        </div>
+      </section>
+
+      <section className="card">
+        <div className="section-heading tight">
+          <p className="eyebrow">Rewards</p>
+          <h2>Consistency unlocks support</h2>
+        </div>
+        <div className="reward-list">
+          {rewards.map((reward) => {
+            const unlocked = currentStreak >= reward.days;
+            return (
+              <article className={`reward-item ${unlocked ? 'unlocked' : ''}`} key={reward.days}>
+                <div className="reward-icon" aria-hidden="true">
+                  {unlocked ? <Check size={18} /> : <LockKeyhole size={18} />}
+                </div>
+                <div>
+                  <span>{reward.days}-day step</span>
+                  <strong>{reward.title}</strong>
+                  <p>{reward.description}</p>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="card">
+        <div className="section-heading tight">
+          <p className="eyebrow">How it works</p>
+          <h2>Keep an 80% day</h2>
+        </div>
+        <p className="muted">
+          A streak day counts when you complete at least 80% of your planned doses. Skipping a dose does not erase your effort; it simply gives tomorrow a fresh place to begin.
+        </p>
+      </section>
+    </Page>
+  );
+}
+
+function streakRewards() {
+  return [
+    {
+      days: 3,
+      title: 'Gentle rhythm check-in',
+      description: 'Unlock a short nutritionist-style reflection to spot what is helping you stay consistent.',
+    },
+    {
+      days: 7,
+      title: 'Weekly nutrition review',
+      description: 'Unlock a guided review of your supplement routine and symptom notes.',
+    },
+    {
+      days: 14,
+      title: 'Therapy support session',
+      description: 'Unlock a preparation guide for discussing nutrition support during your treatment phase.',
+    },
+    {
+      days: 30,
+      title: 'Care plan celebration',
+      description: 'Unlock a deeper consistency review with next-step suggestions for your protocol.',
+    },
+  ];
+}
+
+function findBestStreakWindow(history) {
+  const stats = new Map();
+  for (const dose of history) {
+    if (!stats.has(dose.dose_date)) {
+      stats.set(dose.dose_date, { total: 0, taken: 0 });
+    }
+    const day = stats.get(dose.dose_date);
+    day.total += 1;
+    if (dose.status === 'taken') day.taken += 1;
+  }
+
+  let current = null;
+  let best = null;
+  for (const [date, day] of [...stats.entries()].sort(([a], [b]) => a.localeCompare(b))) {
+    const qualifies = day.total > 0 && (day.taken / day.total) >= 0.8;
+    if (!qualifies) {
+      current = null;
+      continue;
+    }
+    current = current ? { start: current.start, end: date, length: current.length + 1 } : { start: date, end: date, length: 1 };
+    if (!best || current.length > best.length) best = current;
+  }
+  return best;
 }
 
 function WeeklyInsight({ patient, adherence }) {

@@ -184,6 +184,26 @@ Outcome:
 - Highlighted overdue rows with a subtle amber background for clearer scanning.
 - Verified the production build still succeeds.
 
+### 2026-05-26 - Compact Streak Card And Details Page
+
+User prompt:
+
+```text
+Now in the first eyesight we need to show these things -
+Today count, streak and Next Dose detail.
+Currently the same data is visible, but we can redesign the Streak card as it is taking high space, we can reduce it in simple (reducing its size by half) 
+And make that card clickable, which will redirected to the Streak details page where we can share details about the streak, when streak started (higest streak), next reward for complteing the perticular step > and reward should not be direct monetory rewards but like unlocking the therapy session or something regarding promoting our service only.
+```
+
+Outcome:
+
+- Redesigned the top home dashboard so today count and streak appear in a compact first-view row.
+- Reduced the streak card footprint and made it clickable.
+- Added `/streak` as a streak details page.
+- The streak details page shows current streak, streak start, highest streak period, next unlock, and service-oriented non-monetary rewards.
+- Reward examples include nutrition review, therapy support preparation, and care-plan consistency guidance.
+- Verified the production build still succeeds and checked the route in the browser.
+
 ## Command And Verification Log
 
 ### Build And Verification
@@ -247,6 +267,14 @@ Outcome:
   - added `TodayDoseOverview`
   - added red skipped/missed row styling
   - `npm run build`
+- Updated compact streak experience:
+  - reviewed home dashboard, route definitions, and progress streak data
+  - added compact top glance layout
+  - made the streak card clickable
+  - added `/streak`
+  - added highest streak and reward unlock details
+  - `npm run build`
+  - verified home and `/streak` in the browser at 375px width
 
 ### Git And Push
 
