@@ -1,4 +1,6 @@
-# Everhope Companion Demo
+# everhope-dose-tracker
+
+Everhope Companion Demo
 
 A mobile-first prototype for `store.everhope.care` patients to follow supplement schedules, track doses, review progress, and know when to reorder.
 
