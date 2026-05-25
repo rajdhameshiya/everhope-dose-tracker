@@ -1,0 +1,9 @@
+{
+  "name": "everhope-companion-demo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "postinstall": "npm install --prefix server && npm install --prefix client",
+    "dev": "node scripts/dev.mjs"
+  }
+}
