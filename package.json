@@ -2,8 +2,10 @@
   "name": "everhope-companion-demo",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "postinstall": "npm install --prefix server && npm install --prefix client",
-    "dev": "node scripts/dev.mjs"
+    "dev": "node scripts/dev.mjs",
+    "build": "npm run build --prefix client"
   }
 }

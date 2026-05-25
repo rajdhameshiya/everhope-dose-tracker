@@ -133,6 +133,24 @@ Outcome:
 - Fixed the crash by importing `React` in `client/src/App.jsx`.
 - Verified the welcome/profile selection screen renders at a 375px mobile viewport.
 
+### 2026-05-25 - Vercel 404 Fix
+
+User prompt:
+
+```text
+this same error is in the Vercel Deploye - 404 not found error. Attached in image
+```
+
+Outcome:
+
+- Reviewed the Vercel 404 screenshot showing `404: NOT_FOUND`.
+- Added root Vercel deployment configuration so the `client` Vite app builds to `client/dist`.
+- Added SPA rewrites so direct routes such as `/home`, `/schedule`, `/progress`, and `/supplements` serve `index.html`.
+- Added same-origin production API routing from the frontend so deployed API calls use `/api` instead of local `localhost:3002`.
+- Refactored the Express app into an exportable server app and added Vercel serverless API entrypoints.
+- Moved the SQLite file to `/tmp` when running on Vercel so the serverless runtime can create the demo database.
+- Verified the root production build and API function imports locally.
+
 ## Command And Verification Log
 
 ### Build And Verification
@@ -175,6 +193,17 @@ Outcome:
   - browser debugger captured `ReferenceError: React is not defined`
   - `npm run build --prefix client`
   - verified rendered welcome screen in the in-app browser at 375px width
+- Prepared Vercel deployment fix:
+  - `rg --files`
+  - reviewed root, client, and server `package.json`
+  - reviewed `server/index.js`, `server/db.js`, and `client/src/api.js`
+  - added `vercel.json`
+  - added `api/index.js`
+  - added `api/[...path].js`
+  - split `server/app.js` from local `server/index.js`
+  - `npm run build`
+  - `node -e "import('./api/index.js').then(() => console.log('api import ok'))"`
+  - `node -e "import('./api/[...path].js').then(() => console.log('catchall import ok'))"`
 
 ### Git And Push
 
