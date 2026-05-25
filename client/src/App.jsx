@@ -74,6 +74,24 @@ function updateDoseInList(list, doseId, changes) {
   return list.map((dose) => (dose.id === doseId ? { ...dose, ...changes } : dose));
 }
 
+function todaySummaryFromDoses(doses, fallback = {}) {
+  const summary = {
+    total: doses.length,
+    taken: doses.filter((dose) => dose.status === 'taken').length,
+    missed: doses.filter((dose) => dose.status === 'missed').length,
+    pending: doses.filter((dose) => dose.status === 'pending').length,
+    overdue: doses.filter((dose) => statusKind(dose) === 'overdue').length,
+  };
+
+  return summary.total > 0 ? summary : {
+    total: fallback.total || 0,
+    taken: fallback.taken || 0,
+    missed: fallback.missed || 0,
+    pending: fallback.pending || 0,
+    overdue: fallback.overdue || 0,
+  };
+}
+
 function PatientDataProvider({ patientId, children }) {
   const [patient, setPatient] = useState(null);
   const [todayDoses, setTodayDoses] = useState([]);
@@ -355,7 +373,7 @@ function HomeScreen() {
   const sortedDoses = sortDoses(todayDoses);
   const pendingDoses = sortedDoses.filter((dose) => dose.status === 'pending');
   const nextDose = pendingDoses[0] || null;
-  const summary = adherence?.today || { total: 0, taken: 0, pending: 0, missed: 0, overdue: 0 };
+  const summary = todaySummaryFromDoses(todayDoses, adherence?.today);
   const allTaken = summary.total > 0 && summary.taken === summary.total;
   const noPending = summary.total > 0 && summary.pending === 0;
   const tomorrowPreview = makePreviewDoses(patient?.products || [], addDays(todayKey(), 1));
@@ -406,7 +424,7 @@ function HomeScreen() {
         ))}
       </div>
 
-      <QuickStats adherence={adherence} />
+      <QuickStats adherence={adherence} todaySummary={summary} />
     </Page>
   );
 }
@@ -520,8 +538,8 @@ function CompletionCard({ allTaken }) {
   );
 }
 
-function QuickStats({ adherence }) {
-  const today = adherence?.today || { taken: 0, total: 0 };
+function QuickStats({ adherence, todaySummary }) {
+  const today = todaySummary || adherence?.today || { taken: 0, total: 0 };
   const stats = [
     { label: 'Today', value: `${today.taken} of ${today.total}`, helper: 'taken' },
     { label: 'This week', value: `${adherence?.thisWeekAdherence ?? 0}%`, helper: 'adherence' },

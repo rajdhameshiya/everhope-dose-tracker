@@ -204,6 +204,22 @@ Outcome:
 - Reward examples include nutrition review, therapy support preparation, and care-plan consistency guidance.
 - Verified the production build still succeeds and checked the route in the browser.
 
+### 2026-05-26 - Live Today Count Update Fix
+
+User prompt:
+
+```text
+Now in the Daily count, it is not updating correctly, When I clicks on the Mark as taken, it is not updating the Today's count.
+```
+
+Outcome:
+
+- Identified that the home dashboard Today count was reading from the adherence API summary instead of the live `todayDoses` state.
+- Added a local Today summary helper that derives total, taken, pending, skipped, and overdue counts directly from `todayDoses`.
+- Updated the high-level Today count card and the lower quick stats Today tile to use the live summary.
+- The count now updates immediately with optimistic dose logging.
+- Verified the production build still succeeds.
+
 ## Command And Verification Log
 
 ### Build And Verification
@@ -275,6 +291,11 @@ Outcome:
   - added highest streak and reward unlock details
   - `npm run build`
   - verified home and `/streak` in the browser at 375px width
+- Fixed live Today count updates:
+  - reviewed home summary, Today overview, and QuickStats data flow
+  - added `todaySummaryFromDoses`
+  - wired Today overview and quick stats to live `todayDoses`
+  - `npm run build`
 
 ### Git And Push
 
