@@ -14,6 +14,7 @@ import {
   X,
 } from 'lucide-react';
 import {
+  default as React,
   createContext,
   useCallback,
   useContext,

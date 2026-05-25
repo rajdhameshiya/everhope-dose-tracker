@@ -104,6 +104,35 @@ Outcome:
 - Added this conversation prompt and change log file.
 - Future code/change pushes for this repository should update this file with the latest user-visible prompt and concrete change/push log before pushing.
 
+### 2026-05-25 - Localhost White Screen Fix
+
+User prompts:
+
+```text
+Run on the localhost for now
+```
+
+```text
+run the server on localhost
+```
+
+```text
+run on the localhost
+```
+
+```text
+Even running on the local host, it is not wokring like a white background is appearing.
+```
+
+Outcome:
+
+- Confirmed the Vite frontend was running at `http://localhost:3000/`.
+- Confirmed the Express API was running at `http://localhost:3002`.
+- Reproduced the blank white/off-white screen in a browser.
+- Captured the frontend runtime error: `ReferenceError: React is not defined` in `client/src/App.jsx`.
+- Fixed the crash by importing `React` in `client/src/App.jsx`.
+- Verified the welcome/profile selection screen renders at a 375px mobile viewport.
+
 ## Command And Verification Log
 
 ### Build And Verification
@@ -135,6 +164,17 @@ Outcome:
   - `curl -s http://localhost:3002/api/adherence/3`
   - `curl -s http://localhost:3002/api/patients/1`
   - `curl -s http://localhost:3000`
+- Diagnosed and fixed localhost blank page:
+  - `npm run dev`
+  - `lsof -ti tcp:3000`
+  - `lsof -ti tcp:3002`
+  - `curl -s http://localhost:3000`
+  - `curl -s http://localhost:3002/api/health`
+  - `curl -s http://localhost:3002/api/patients`
+  - headless browser screenshot at `http://localhost:3000`
+  - browser debugger captured `ReferenceError: React is not defined`
+  - `npm run build --prefix client`
+  - verified rendered welcome screen in the in-app browser at 375px width
 
 ### Git And Push
 
@@ -158,4 +198,3 @@ Outcome:
   - `git add README.md`
   - `git commit -m "Merge GitHub repository history"`
   - `git push -u origin main`
-
