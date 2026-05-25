@@ -360,6 +360,7 @@ function HomeScreen() {
   return (
     <Page>
       <GreetingHeader patient={patient} summary={summary} />
+      <TodayDoseOverview summary={summary} />
       <NudgeCard nudge={adherence?.consecutiveMissNudge} />
       <StreakCard adherence={adherence} />
 
@@ -386,7 +387,7 @@ function HomeScreen() {
         {sortedDoses.map((dose) => (
           <button
             key={dose.id}
-            className="dose-row"
+            className={`dose-row ${statusKind(dose)}`}
             type="button"
             onClick={() => navigate(`/log/${dose.id}`)}
           >
@@ -401,6 +402,39 @@ function HomeScreen() {
 
       <QuickStats adherence={adherence} />
     </Page>
+  );
+}
+
+function TodayDoseOverview({ summary }) {
+  const missedCount = summary.missed || 0;
+  const pendingCount = summary.pending || 0;
+
+  return (
+    <section className={`today-overview card ${missedCount > 0 ? 'has-missed' : ''}`}>
+      <div>
+        <p className="eyebrow">Today</p>
+        <h2>Dose summary</h2>
+      </div>
+      <div className="today-overview-grid">
+        <div>
+          <span>Total doses</span>
+          <strong>{summary.total || 0}</strong>
+        </div>
+        <div>
+          <span>Taken</span>
+          <strong>{summary.taken || 0}</strong>
+        </div>
+        <div className={missedCount > 0 ? 'danger-metric' : ''}>
+          <span>Skipped</span>
+          <strong>{missedCount}</strong>
+        </div>
+      </div>
+      <p className="overview-note">
+        {pendingCount > 0
+          ? `${pendingCount} ${plural(pendingCount, 'dose')} still planned for today.`
+          : 'No more doses are pending today.'}
+      </p>
+    </section>
   );
 }
 

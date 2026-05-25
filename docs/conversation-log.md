@@ -167,6 +167,23 @@ Outcome:
 - Verified `vercel.json` parses as valid JSON.
 - Verified the production build still succeeds.
 
+### 2026-05-25 - Dashboard Dose Counts
+
+User prompt:
+
+```text
+In the dashbaord -
+add a high level count of no of dosage Today and taken number of dosage for Today. And Missed or skipped dosage should be highlighted with Red background (inshourt highlight it in different way)
+```
+
+Outcome:
+
+- Added a high-level home dashboard dose summary card.
+- The dashboard now shows today's total dose count, taken count, and skipped count.
+- Highlighted skipped/missed doses with a red-tinted row background and a stronger red status chip.
+- Highlighted overdue rows with a subtle amber background for clearer scanning.
+- Verified the production build still succeeds.
+
 ## Command And Verification Log
 
 ### Build And Verification
@@ -224,6 +241,11 @@ Outcome:
   - reviewed `vercel.json`
   - updated `/api/:path*` rewrite to `/api/index.js`
   - `node -e "const fs=require('fs'); JSON.parse(fs.readFileSync('vercel.json','utf8')); console.log('vercel json ok')"`
+  - `npm run build`
+- Updated dashboard dose summary:
+  - reviewed `HomeScreen`, `QuickStats`, `StatusChip`, and dose row styles
+  - added `TodayDoseOverview`
+  - added red skipped/missed row styling
   - `npm run build`
 
 ### Git And Push

@@ -237,6 +237,58 @@ h2 {
   color: #4b5563;
 }
 
+.today-overview {
+  display: grid;
+  gap: 12px;
+}
+
+.today-overview.has-missed {
+  border-color: #fecaca;
+  background: linear-gradient(180deg, #fff, var(--red-soft));
+}
+
+.today-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.today-overview-grid div {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  padding: 10px;
+  display: grid;
+  gap: 2px;
+}
+
+.today-overview-grid span {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 750;
+}
+
+.today-overview-grid strong {
+  color: #111827;
+  font-size: 1.5rem;
+  line-height: 1.1;
+}
+
+.today-overview-grid .danger-metric {
+  border-color: #fecaca;
+  background: var(--red-soft);
+}
+
+.today-overview-grid .danger-metric span,
+.today-overview-grid .danger-metric strong {
+  color: #991b1b;
+}
+
+.overview-note {
+  color: #4b5563;
+  font-size: 0.92rem;
+}
+
 .eyebrow {
   color: var(--accent);
   font-size: 0.76rem;
@@ -348,6 +400,21 @@ h2 {
   text-align: left;
 }
 
+.dose-row.missed {
+  border-color: #fecaca;
+  background: var(--red-soft);
+}
+
+.dose-row.missed strong,
+.dose-row.missed small {
+  color: #991b1b;
+}
+
+.dose-row.overdue {
+  border-color: #fed7aa;
+  background: var(--amber-soft);
+}
+
 .dose-row span:first-child {
   display: grid;
   min-width: 0;
@@ -383,8 +450,8 @@ h2 {
 }
 
 .status-chip.missed {
-  color: var(--red);
-  background: var(--red-soft);
+  color: #fff;
+  background: var(--red);
 }
 
 .status-chip.overdue {
