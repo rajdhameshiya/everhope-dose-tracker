@@ -151,6 +151,22 @@ Outcome:
 - Moved the SQLite file to `/tmp` when running on Vercel so the serverless runtime can create the demo database.
 - Verified the root production build and API function imports locally.
 
+### 2026-05-25 - Vercel API JSON Error Fix
+
+User prompt:
+
+```text
+Json error
+```
+
+Outcome:
+
+- Reviewed the screenshot showing the welcome screen with `Unexpected token '<', "<!doctype "... is not valid JSON`.
+- Identified that `/api/patients` was being served the Vite `index.html` fallback instead of JSON.
+- Updated the Vercel rewrite for `/api/:path*` to route directly to the serverless API entrypoint.
+- Verified `vercel.json` parses as valid JSON.
+- Verified the production build still succeeds.
+
 ## Command And Verification Log
 
 ### Build And Verification
@@ -204,6 +220,11 @@ Outcome:
   - `npm run build`
   - `node -e "import('./api/index.js').then(() => console.log('api import ok'))"`
   - `node -e "import('./api/[...path].js').then(() => console.log('catchall import ok'))"`
+- Tightened Vercel API rewrite after deployed JSON parse error:
+  - reviewed `vercel.json`
+  - updated `/api/:path*` rewrite to `/api/index.js`
+  - `node -e "const fs=require('fs'); JSON.parse(fs.readFileSync('vercel.json','utf8')); console.log('vercel json ok')"`
+  - `npm run build`
 
 ### Git And Push
 
