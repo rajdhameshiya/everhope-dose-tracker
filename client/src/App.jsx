@@ -135,6 +135,12 @@ function PatientDataProvider({ patientId, children }) {
     refresh().catch((err) => setError(err.message || 'Could not refresh your companion.'));
   }, [refresh]);
 
+  const refreshAdherenceQuietly = useCallback(() => {
+    api.adherence(patientId)
+      .then(setAdherence)
+      .catch((err) => setError(err.message || 'Could not refresh your progress.'));
+  }, [patientId]);
+
   const markTaken = useCallback(async (dose) => {
     const takenAt = new Date().toISOString();
     setTodayDoses((items) => updateDoseInList(items, dose.id, {
@@ -152,13 +158,15 @@ function PatientDataProvider({ patientId, children }) {
     setSymptomDoseId(dose.id);
 
     try {
-      await api.markTaken(dose.id, takenAt);
-      refreshQuietly();
+      const savedDose = await api.markTaken(dose.id, takenAt);
+      setTodayDoses((items) => updateDoseInList(items, dose.id, savedDose));
+      setHistory((items) => updateDoseInList(items, dose.id, savedDose));
+      refreshAdherenceQuietly();
     } catch (err) {
       setError(err.message || 'Could not log this dose.');
       refreshQuietly();
     }
-  }, [refreshQuietly]);
+  }, [refreshAdherenceQuietly, refreshQuietly]);
 
   const markMissed = useCallback(async (dose) => {
     setTodayDoses((items) => updateDoseInList(items, dose.id, {
@@ -178,13 +186,15 @@ function PatientDataProvider({ patientId, children }) {
     setSymptomDoseId(null);
 
     try {
-      await api.markMissed(dose.id);
-      refreshQuietly();
+      const savedDose = await api.markMissed(dose.id);
+      setTodayDoses((items) => updateDoseInList(items, dose.id, savedDose));
+      setHistory((items) => updateDoseInList(items, dose.id, savedDose));
+      refreshAdherenceQuietly();
     } catch (err) {
       setError(err.message || 'Could not update this dose.');
       refreshQuietly();
     }
-  }, [refreshQuietly]);
+  }, [refreshAdherenceQuietly, refreshQuietly]);
 
   const saveSymptom = useCallback(async (doseId, note) => {
     const cleanNote = note.trim();
@@ -193,13 +203,15 @@ function PatientDataProvider({ patientId, children }) {
     setHistory((items) => updateDoseInList(items, doseId, { symptom_note: cleanNote }));
     setSymptomDoseId(null);
     try {
-      await api.symptom(doseId, cleanNote);
-      refreshQuietly();
+      const savedDose = await api.symptom(doseId, cleanNote);
+      setTodayDoses((items) => updateDoseInList(items, doseId, savedDose));
+      setHistory((items) => updateDoseInList(items, doseId, savedDose));
+      refreshAdherenceQuietly();
     } catch (err) {
       setError(err.message || 'Could not save your note.');
       refreshQuietly();
     }
-  }, [refreshQuietly]);
+  }, [refreshAdherenceQuietly, refreshQuietly]);
 
   const value = useMemo(() => ({
     patient,

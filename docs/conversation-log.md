@@ -220,6 +220,23 @@ Outcome:
 - The count now updates immediately with optimistic dose logging.
 - Verified the production build still succeeds.
 
+### 2026-05-26 - Dose Count Race Condition Fix
+
+User prompt:
+
+```text
+Still this problem is not fixed, like when I marking a dose as taken or skipped, it is updating the counter, but when I do this process for 3rd dose, it is resetting the counter data. (marked 1st and 2nd dose continuously and direct 3rd dose)
+```
+
+Outcome:
+
+- Identified a race condition caused by full background refreshes after each dose action.
+- Older refresh responses could arrive after newer optimistic updates and overwrite today's dose list.
+- Changed successful taken/skipped/symptom actions to update only the affected dose from the API response.
+- Limited background success refreshes to adherence/progress metadata so the live dose list is not reset.
+- Kept the full refresh path for API failure recovery.
+- Verified the production build still succeeds.
+
 ## Command And Verification Log
 
 ### Build And Verification
@@ -295,6 +312,12 @@ Outcome:
   - reviewed home summary, Today overview, and QuickStats data flow
   - added `todaySummaryFromDoses`
   - wired Today overview and quick stats to live `todayDoses`
+  - `npm run build`
+- Fixed rapid dose action counter reset:
+  - reviewed `markTaken`, `markMissed`, `saveSymptom`, and refresh behavior
+  - added `refreshAdherenceQuietly`
+  - stopped successful dose actions from replacing the full today dose list
+  - updated affected dose rows from API responses
   - `npm run build`
 
 ### Git And Push
