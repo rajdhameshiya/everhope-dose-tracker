@@ -4,6 +4,9 @@ Everhope Companion Demo
 
 A mobile-first prototype for `store.everhope.care` patients to follow supplement schedules, track doses, review progress, and know when to reorder.
 
+## Demo Data
+I have used Demo data for demo purpose, and kept 3 diffferent profiles.
+
 ## Run locally
 
 ```bash
