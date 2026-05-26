@@ -27,6 +27,7 @@ The demo has no authentication. Selecting a patient stores their ID in `localSto
 ## Prompt File
 
 find the Prompt file in Docs > Conversation-log.md or just [click here](https://github.com/rajdhameshiya/everhope-dose-tracker/tree/main/docs)
+File of the initial prompts > Initial Prompts from Claude and Chatgpt.pdf or just [click here](https://github.com/rajdhameshiya/everhope-dose-tracker/blob/main/docs/Initial%20Prompts%20from%20Claude%20and%20Chatgpt.pdf)
 
 ## Roadmap for 4 week & 12 week
 
